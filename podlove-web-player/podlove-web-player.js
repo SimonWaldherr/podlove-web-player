@@ -26,7 +26,7 @@
 			enableAutosize: true,
 			features: ['playpause','current','progress','duration','tracks','volume','fullscreen'],
 			alwaysShowControls: false,
-			iPadUseNativeControls: false,
+			iPadUseNativeControls: true,
 			iPhoneUseNativeControls: false,
 			AndroidUseNativeControls: false,
 			alwaysShowHours: false,
@@ -71,7 +71,7 @@
 				//kill fullscreen button
 				$.each(mejsoptions.features, function(i){
 					if (this == 'fullscreen') {
-						mejsoptions.features.splice(i, 1);		
+						mejsoptions.features.splice(i, 1);
 					}
 				});
 
@@ -83,7 +83,7 @@
 					mejsoptions.videoHeight = params.height;
 				}
 
-			 	if (typeof $(player).attr('width') !== 'undefined') {
+				if (typeof $(player).attr('width') !== 'undefined') {
 					params.width = $(player).attr('width');
 				}
 			}
@@ -139,7 +139,7 @@
 					//kill play/pause button from miniplayer
 					$.each(mejsoptions.features, function(i){
 						if (this == 'playpause') {
-							mejsoptions.features.splice(i,1);		
+							mejsoptions.features.splice(i,1);
 						}
 					});
 					
@@ -244,6 +244,7 @@
 
 			// init MEJS to player
 			mejsoptions.success = function (player) {
+//console.log("success")
 				addBehavior(player, params);
 				if (deepLink !== false && players.length === 1) {
 					$('html, body').delay(150).animate({
@@ -254,15 +255,18 @@
 
 			$(orig).replaceWith(wrapper);
 			$(player).mediaelementplayer(mejsoptions);
+//console.log(player)
 		});
 	};
 
 	/**
 	 * Given a list of chapters, this function creates the chapter table for the player.
 	 */
-	var generateChapterTable = function( params){
+	var generateChapterTable = function generateChapterTable( params){
 		
-		var div = $(
+		// cache the templates and clone them later on
+		if( !generateChapterTable.div){
+			generateChapterTable.div = $(
 			'<div class="podlovewebplayer_chapterbox showonplay"><table>'
 			+ '<caption>Podcast Chapters</caption><thead><tr>'
 			+ '<th scope="col">Chapter Number</th>'
@@ -270,7 +274,21 @@
 			+ '<th scope="col">Title</th>'
 			+ '<th scope="col">Duration</th>'
 			+ '</tr></thead>'
-			+ '<tbody></tbody></table></div>'),
+			+ '<tbody></tbody></table></div>');
+			
+			//this is a "template" for each chapter row
+			generateChapterTable.rowDummy = $(
+			'<tr class="chaptertr" data-start="" data-end="">'
+			+ '<td class="starttime"><span></span></td>'
+			+ '<td></td>'
+			+ '<td class="timecode">\n'
+			+ '<span></span>\n'
+			+ '</td>\n'
+			+ '</tr>');
+		}
+		
+		var div = generateChapterTable.div.clone(true),
+			rowDummy = generateChapterTable.rowDummy,
 			table = div.children('table'),
 			tbody = table.children('tbody');
 
@@ -316,16 +334,6 @@
 				maxchapterstart = Math.round(next.start);
 			}
 		});
-
-		//this is a "template" for each chapter row
-		var rowDummy = $(
-			'<tr class="chaptertr" data-start="" data-end="">'
-			+ '<td class="starttime"><span></span></td>'
-			+ '<td></td>'
-			+ '<td class="timecode">\n'
-			+ '<span></span>\n'
-			+ '</td>\n'
-			+ '</tr>');
 
 		//third round: build actual dom table
 		$.each(tempchapters, function(i){
@@ -395,6 +403,11 @@
 		// get things straight for flash fallback
 		if (player.pluginType == 'flash') {
 			layoutedPlayer = $('#mep_' + player.id.substring(9));
+			/** TODO
+			 * Hier ist etwas merkwürdig: Erzeugt MEJS automatisch einen #mep_* Player, falls der Rest failt?
+			 * Ist der auch an der richtigen Stelle eingefügt? Der Code hier drunter erwartet, dass `layoutedPlayer`
+			 * im DOM ist.
+			 */
 		}
 
 		// cache some jQ objects
@@ -413,19 +426,12 @@
 			}
 		});
 		
+		/**
+		 * TODO: warum sollte metatinfo jemals != 1 sein?
+		 */
 		if (metainfo.length === 1) {
 
-			metainfo.find('a.infowindow').click(function(){
-				if(typeof player.parentNode != 'undefined') {
-					summary.toggleClass('active');
-					if(summary.hasClass('active')) {
-						summary.height(summary.data('height') + 'px');
-					} else {
-						summary.height('0px');
-					}
-				}
-				return false;
-			});
+			metainfo.find('a.infowindow').click({player:player, summary: summary}, eventHandler.clickInfowindow);
 
 			metainfo.find('a.showcontrols').on('click', function(){
 				if(typeof player.parentNode != 'undefined') {
@@ -470,7 +476,7 @@
 						player.setCurrentTime(chapterdiv.find('.active').data('start'));
 					} else {
 						player.setCurrentTime(chapterdiv.find('.active').prev().data('start'));
-					}					
+					}
 				} else {
 					player.play();
 				}
@@ -567,11 +573,13 @@
 			});
 
 		chapterdiv.each(function() {
+			//TODO: is this mutual assignment?
 			$(this).data('height', $(this).height());
 			$(this).height($(this).data('height'));
 			if(!$(this).hasClass('active')) {
 				$(this).height('0px');
 			}
+			//TODO: dry this up
 			$(this).closest('.podlovewebplayer_wrapper').find('.chaptertoggle').click(function() {
 				$(this).closest('.podlovewebplayer_wrapper').find('.podlovewebplayer_chapterbox').toggleClass('active');
 				if ($(this).closest('.podlovewebplayer_wrapper').find('.podlovewebplayer_chapterbox').hasClass('active')) {
@@ -631,8 +639,12 @@
 		});
 	};
 
-
-
+	//TODO: dont clutter the jQ namespace
+	$.fn.toggleHeight = function () {
+		return this.toggleClass('active').height(function(){
+			return $(this).hasClass('active') ? $(this).data('height') + 'px' : '0px';
+		});
+	};
 
 
 
@@ -792,6 +804,25 @@
 			fragment = 't=' + generateTimecode([e.data.player.currentTime]);
 			setFragmentURL(fragment);
 		}
+	};
+
+	var eventHandler = {
+		clickInfowindow: function(event){
+			var player = event.data.player,
+				summary = event.data.summary;
+
+			if(typeof player.parentNode != 'undefined') {
+				summary.toggleClass('active');
+				if(summary.hasClass('active')) {
+					summary.height(summary.data('height') + 'px');
+				} else {
+					summary.height('0px');
+				}
+			}
+
+			return false;
+		}
+
 	};
 	
 }(jQuery));
