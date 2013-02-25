@@ -418,12 +418,8 @@
 
 		// get things straight for flash fallback
 		if (player.pluginType == 'flash') {
+			//TODO: this line is not reliable: the player might have not id
 			layoutedPlayer = $('#mep_' + player.id.substring(9));
-			/** TODO
-			 * Hier ist etwas merkwürdig: Erzeugt MEJS automatisch einen #mep_* Player, falls der Rest failt?
-			 * Ist der auch an der richtigen Stelle eingefügt? Der Code hier drunter erwartet, dass `layoutedPlayer`
-			 * im DOM ist.
-			 */
 		}
 
 		// cache some jQ objects
@@ -451,7 +447,7 @@
 		
 console.log(metainfo.length)
 		/**
-		 * TODO: warum sollte metatinfo jemals != 1 sein?
+		 * TODO: warum sollte metainfo jemals != 1 sein? Video?
 		 */
 		if (metainfo.length === 1) {
 
@@ -579,33 +575,37 @@ console.log(metainfo.length)
 		list
 			.show()
 			.delegate('.chaptertr', 'click', function (e) {
-				if ($(this).closest('table').hasClass('linked_all') || $(this).closest('tr').hasClass('loaded')) {
-					e.preventDefault();
-					var mark = $(this).closest('tr'),
-						startTime = mark.data('start'),
-						endTime = mark.data('end');
+				e.preventDefault();
 
-					// If there is only one player also set deepLink
-					if (players.length === 1) {
-						// setFragmentURL('t=' + generateTimecode([startTime, endTime]));
-						setFragmentURL('t=' + generateTimecode([startTime]));
+				if ( !( $(this).closest('table').hasClass('linked_all') || $(this).hasClass('loaded')))
+					return;
+
+				var mark = $(this),
+					startTime = mark.data('start'),
+					endTime = mark.data('end');
+
+				// If there is only one player also set deepLink
+				if (players.length === 1) {
+					// setFragmentURL('t=' + generateTimecode([startTime, endTime]));
+					setFragmentURL('t=' + generateTimecode([startTime]));
+				} else {
+					if (canplay) {
+						// Basic Chapter Mark function (without deeplinking)
+						player.setCurrentTime(startTime);
 					} else {
-						if (canplay) {
-							// Basic Chapter Mark function (without deeplinking)
+						//TODO: can these stack?
+						jqPlayer.bind('canplay', function () {
 							player.setCurrentTime(startTime);
-						} else {
-							jqPlayer.bind('canplay', function () {
-								player.setCurrentTime(startTime);
-							});
-						}
+						});
 					}
-
-					// flash fallback needs additional pause
-					if (player.pluginType == 'flash') {
-						player.pause();
-					}
-					player.play();
 				}
+
+				// flash fallback needs additional pause
+				if (player.pluginType == 'flash') {
+					player.pause();
+				}
+				player.play();
+				
 				return false;
 			});
 
