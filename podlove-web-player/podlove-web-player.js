@@ -231,7 +231,6 @@
 				if (richplayer || haschapters) {
 					wrapper.append('<div class="podlovewebplayer_tableend"></div>');
 				}
-				
 
 				// parse deeplink
 				deepLink = parseTimecode(window.location.href);
@@ -429,7 +428,7 @@
 			podlovewebplayer_timecontrol = wrapper.find('.podlovewebplayer_timecontrol'),
 			podlovewebplayer_sharebuttons = wrapper.find('.podlovewebplayer_sharebuttons'),
 			chapterdiv = wrapper.find('.podlovewebplayer_chapterbox');
-		
+
 		// fix height of summary for better toggability
 		summary.each(function() {
 			$(this).data('height', $(this).height());
@@ -440,7 +439,8 @@
 
 		chapterdiv.each(function() {
 			$(this).data('height', $(this).find('.podlovewebplayer_chapters').height());
-			if(!$(this).hasClass('active')) {
+			if (!$(this).hasClass('active')) {
+
 				$(this).height('0px');
 			}
 		});
@@ -476,23 +476,25 @@ console.log(metainfo.length)
 			});
 
 			metainfo.find('.bigplay').on('click', function(){
-				if(typeof player.parentNode != 'undefined') {
-					if(player.parentNode.className == 'mejs-mediaelement') {
+				if($(this).hasClass('bigplay')) {
+					if((typeof player.currentTime === 'number')&&(player.currentTime > 0)) {
 						if (player.paused) {
 							player.play();
-							$(this).addClass('playing');
+							$(this).parent().find('.bigplay').addClass('playing');
 						} else {
 							player.pause();
-							$(this).removeClass('playing');
+							$(this).parent().find('.bigplay').removeClass('playing');
 						}
+					} else {
+						player.play();
 					}
 				}
 				return false;
 			});
 
-
 			//TODO: dry this up
-			wrapper.find('.chaptertoggle').click(function() {
+			//wrapper.find('.chaptertoggle').click(function() {
+			wrapper.find('.chaptertoggle').unbind('click').click(function(){
 				wrapper.find('.podlovewebplayer_chapterbox').toggleClass('active');
 				if (wrapper.find('.podlovewebplayer_chapterbox').hasClass('active')) {
 					wrapper.find('.podlovewebplayer_chapterbox').height(wrapper.find('.podlovewebplayer_chapterbox').data('height') + 'px');
@@ -515,7 +517,7 @@ console.log(metainfo.length)
 				}
 				return false;
 			});
-			
+
 			wrapper.find('.nextbutton').click(function(){
 				if ((typeof player.currentTime === 'number') && (player.currentTime > 0)) {
 					player.setCurrentTime(chapterdiv.find('.active').next().data('start'));
@@ -544,27 +546,32 @@ console.log(metainfo.length)
 			});
 
 			wrapper.find('.currentbutton').click(function(){
-				window.prompt('This URL directly points to the current playback position', $(this).closest('.podlovewebplayer_wrapper').find('.episodetitle a').attr('href')+'#t='+generateTimecode([player.currentTime]));
+				window.prompt('This URL directly points to the current playback position', $(this).closest('.podlovewebplayer_wrapper').find('.episodetitle a').attr('href'));
 				return false;
 			});
 
 			wrapper.find('.tweetbutton').click(function(){
-				window.open('https://twitter.com/share?text='+encodeURI($(this).closest('.podlovewebplayer_wrapper').find('.episodetitle a').text())+'&url='+encodeURI($(this).closest('.podlovewebplayer_wrapper').find('.episodetitle a').attr('href'))+'%23t%3D'+generateTimecode([player.currentTime]), 'tweet it', 'width=550,height=420,resizable=yes');
+				window.open('https://twitter.com/share?text='+encodeURI($(this).closest('.podlovewebplayer_wrapper').find('.episodetitle a').text())+'&url='+encodeURI($(this).closest('.podlovewebplayer_wrapper').find('.episodetitle a').attr('href')), 'tweet it', 'width=550,height=420,resizable=yes');
 				return false;
 			});
-			
+
 			wrapper.find('.fbsharebutton').click(function(){
-				window.open('http://www.facebook.com/share.php?t='+encodeURI($(this).closest('.podlovewebplayer_wrapper').find('.episodetitle a').text())+'&u='+encodeURI($(this).closest('.podlovewebplayer_wrapper').find('.episodetitle a').attr('href'))+'%23t%3D'+generateTimecode([player.currentTime]), 'share it', 'width=550,height=340,resizable=yes');
+				window.open('http://www.facebook.com/share.php?t='+encodeURI($(this).closest('.podlovewebplayer_wrapper').find('.episodetitle a').text())+'&u='+encodeURI($(this).closest('.podlovewebplayer_wrapper').find('.episodetitle a').attr('href')), 'share it', 'width=550,height=340,resizable=yes');
 				return false;
 			});
-			
+
 			wrapper.find('.gplusbutton').click(function(){
-				window.open('https://plus.google.com/share?title='+encodeURI($(this).closest('.podlovewebplayer_wrapper').find('.episodetitle a').text())+'&url='+encodeURI($(this).closest('.podlovewebplayer_wrapper').find('.episodetitle a').attr('href'))+'%23t%3D'+generateTimecode([player.currentTime]), 'plus it', 'width=550,height=420,resizable=yes');
+				window.open('https://plus.google.com/share?title='+encodeURI($(this).closest('.podlovewebplayer_wrapper').find('.episodetitle a').text())+'&url='+encodeURI($(this).closest('.podlovewebplayer_wrapper').find('.episodetitle a').attr('href')), 'plus it', 'width=550,height=420,resizable=yes');
 				return false;
 			});
-			
+
+			wrapper.find('.adnbutton').click(function(){
+				window.open('https://alpha.app.net/intent/post?text='+encodeURI($(this).closest('.podlovewebplayer_wrapper').find('.episodetitle a').text())+'%20'+encodeURI($(this).closest('.podlovewebplayer_wrapper').find('.episodetitle a').attr('href')), 'plus it', 'width=550,height=420,resizable=yes');
+				return false;
+			});
+
 			wrapper.find('.mailbutton').click(function(){
-				window.location = 'mailto:?subject=&body='+encodeURI($(this).closest('.podlovewebplayer_wrapper').find('.episodetitle a').text())+'%20'+encodeURI($(this).closest('.podlovewebplayer_wrapper').find('.episodetitle a').attr('href'))+'%23t%3D'+generateTimecode([player.currentTime]);
+				window.location = 'mailto:?subject='+encodeURI($(this).closest('.podlovewebplayer_wrapper').find('.episodetitle a').text())+'&body='+encodeURI($(this).closest('.podlovewebplayer_wrapper').find('.episodetitle a').text())+'%20<'+encodeURI($(this).closest('.podlovewebplayer_wrapper').find('.episodetitle a').attr('href'))+'>';
 				return false;
 			});
 		}
@@ -594,7 +601,7 @@ console.log(metainfo.length)
 						player.setCurrentTime(startTime);
 					} else {
 						//TODO: can these stack?
-						jqPlayer.bind('canplay', function () {
+						jqPlayer.one('canplay', function () {
 							player.setCurrentTime(startTime);
 						});
 					}
@@ -608,8 +615,6 @@ console.log(metainfo.length)
 				
 				return false;
 			});
-
-		
 
 		// wait for the player or you'll get DOM EXCEPTIONS
 		jqPlayer.bind('canplay', function () {
@@ -658,6 +663,7 @@ console.log(metainfo.length)
 
 		});
 	};
+
 
 	/**
 	 * return number as string lefthand filled with zeros
