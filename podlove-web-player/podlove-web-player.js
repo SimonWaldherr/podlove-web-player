@@ -8,7 +8,9 @@
 		// Timecode as described in http://podlove.org/deep-link/
 		// and http://www.w3.org/TR/media-frags/#fragment-dimensions
 		timecodeRegExp = /(?:(\d+):)?(\d+):(\d+)(\.\d+)?([,-](?:(\d+):)?(\d+):(\d+)(\.\d+)?)?/,
-		cache = {};
+		wrapperDummy = $(
+			'<div></div>'
+		);
 
 	var methods = {
 		init: function(options) {
@@ -48,7 +50,7 @@
 			}, options);
 
 			// turn each player in the current set into a Podlove Web Player
-			return this.each(function(index, player){
+			return this.map(function(index, player){
 
 				var richplayer = false,
 					haschapters = false;
@@ -254,6 +256,8 @@
 				$(player).mediaelementplayer(mejsoptions);
 
 				$(wrapper).data('player',$(player));
+
+				return player;
 			});
 		},
 
