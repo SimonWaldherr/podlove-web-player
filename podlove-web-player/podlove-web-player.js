@@ -263,8 +263,20 @@
 			});
 		},
 
+		/**
+		 * Starts a player.
+		 * @param time (optional)
+		 */
 		play: function ( time){
-			console.log( this, time)
+			if( $.isFunction(time)){
+				time = time.call( this, this[0].currentTime);
+			}
+
+			/* if deeplink, set url */
+			if( players.length === 1){
+				setFragmentURL('t=' + generateTimecode([time]));
+			}
+
 			if( this.data('canplay')){
 				if( typeof time === 'undefined'){
 					this[0].play();
@@ -276,6 +288,14 @@
 					$(this).data( 'canplay', true).podlovewebplayer( 'play', time);
 				});
 			}
+
+
+			// flash fallback needs additional pause
+			/*TODO
+			if (player && player[0].pluginType == 'flash') {
+				player[0].pause();
+			}
+			player && player[0].play(); */
 
 			return this;
 		}
@@ -330,20 +350,7 @@
 				var startTime = $(this).data('start'),
 					player = $(this).closest('.podlovewebplayer_wrapper').data('player');
 
-				// If there is only one player also set deepLink
-				if (false &&players.length === 1) {
-					setFragmentURL('t=' + generateTimecode([startTime]));
-				} else {
-					player.podlovewebplayer('play', startTime);
-				}
-
-				// flash fallback needs additional pause
-				if (player && player[0].pluginType == 'flash') {
-					player[0].pause();
-				}
-				player && player[0].play();
-				
-				return false;
+				player.podlovewebplayer('play', startTime);
 			});
 		}
 		
@@ -609,6 +616,7 @@
 		// wait for the player or you'll get DOM EXCEPTIONS
 		jqPlayer.bind('canplay', function () {
 			canplay = true;
+			$(this).data('canplay',true);
 
 			// add duration of final chapter
 			if (player.duration) {
@@ -823,7 +831,6 @@
 
 			return false;
 		}
-
 	};
 	
 }(jQuery));
