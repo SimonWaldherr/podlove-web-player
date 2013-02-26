@@ -233,7 +233,7 @@
 				}
 
 				// parse deeplink
-				deepLink = parseTimecode(window.location.href);
+				deepLink = parseTimecode(location.href);
 				if (deepLink !== false && players.length === 1) {
 					$(player).attr({preload: 'auto', autoplay: 'autoplay'});
 					startAtTime = deepLink[0];
@@ -759,7 +759,7 @@
 
 	var checkCurrentURL = function() {
 		var deepLink;
-		deepLink = parseTimecode(window.location.href);
+		deepLink = parseTimecode(location.href);
 		if (deepLink !== false) {
 			startAtTime = deepLink[0];
 			stopAtTime = deepLink[1];
@@ -767,8 +767,7 @@
 	};
 
 	var setFragmentURL = function(fragment) {
-		var url;
-		window.location.hash = fragment;
+		location.hash = fragment;
 	};
 
 	// update the chapter list when the data is loaded
