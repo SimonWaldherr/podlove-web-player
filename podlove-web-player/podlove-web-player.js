@@ -252,6 +252,8 @@
 
 				$(orig).replaceWith(wrapper);
 				$(player).mediaelementplayer(mejsoptions);
+
+				$(wrapper).data('player',$(player));
 			});
 		},
 
@@ -259,6 +261,23 @@
 			return this.toggleClass('active').height(function(){
 				return $(this).hasClass('active') ? $(this).data('height') + 'px' : '0px';
 			});
+		},
+
+		play: function ( time){
+			console.log( this, time)
+			if( this.data('canplay')){
+				if( typeof time === 'undefined'){
+					this[0].play();
+				} else {
+					this[0].setCurrentTime(time);
+				}
+			} else {
+				this.one('canplay', function(){
+					$(this).data( 'canplay', true).podlovewebplayer( 'play', time);
+				});
+			}
+
+			return this;
 		}
 
 	};
@@ -300,6 +319,32 @@
 			+ '<span></span>\n'
 			+ '</td>\n'
 			+ '</tr>');
+
+			//attach events
+			generateChapterTable.div.on( 'click', '.chaptertr', function(event){
+				event.preventDefault();
+
+				if ( !( $(event.delegateTarget).find('table').hasClass('linked_all') || $(this).hasClass('loaded')))
+					return;
+
+				var startTime = $(this).data('start'),
+					player = $(this).closest('.podlovewebplayer_wrapper').data('player');
+
+				// If there is only one player also set deepLink
+				if (false &&players.length === 1) {
+					setFragmentURL('t=' + generateTimecode([startTime]));
+				} else {
+					player.podlovewebplayer('play', startTime);
+				}
+
+				// flash fallback needs additional pause
+				if (player && player[0].pluginType == 'flash') {
+					player[0].pause();
+				}
+				player && player[0].play();
+				
+				return false;
+			});
 		}
 		
 		var div = generateChapterTable.div.clone(true),
@@ -392,6 +437,8 @@
 			row.appendTo( tbody);
 		});
 
+		// chapters list
+		table.show()
 
 		return div;
 	};
@@ -440,12 +487,10 @@
 		chapterdiv.each(function() {
 			$(this).data('height', $(this).find('.podlovewebplayer_chapters').height());
 			if (!$(this).hasClass('active')) {
-
 				$(this).height('0px');
 			}
 		});
 		
-console.log(metainfo.length)
 		/**
 		 * TODO: warum sollte metainfo jemals != 1 sein? Video?
 		 */
@@ -454,24 +499,14 @@ console.log(metainfo.length)
 			metainfo.find('a.infowindow').click({player:player, summary: summary}, eventHandler.clickInfowindow);
 
 			metainfo.find('a.showcontrols').on('click', function(){
-				if(typeof player.parentNode != 'undefined') {
-					podlovewebplayer_timecontrol.toggleClass('active');
-					if(typeof podlovewebplayer_sharebuttons != 'undefined') {
-						if(podlovewebplayer_sharebuttons.hasClass('active')) {
-							podlovewebplayer_sharebuttons.removeClass('active');
-						}
-					}
-				}
+				podlovewebplayer_timecontrol.toggleClass('active');
+				podlovewebplayer_sharebuttons.removeClass('active');
 				return false;
 			});
 
 			metainfo.find('a.showsharebuttons').on('click', function(){
-				if(typeof player.parentNode != 'undefined') {
-					podlovewebplayer_sharebuttons.toggleClass('active');
-					if(podlovewebplayer_timecontrol.hasClass('active')) {
-						podlovewebplayer_timecontrol.removeClass('active');
-					}
-				}
+				podlovewebplayer_sharebuttons.toggleClass('active');
+				podlovewebplayer_timecontrol.removeClass('active');
 				return false;
 			});
 
@@ -495,12 +530,7 @@ console.log(metainfo.length)
 			//TODO: dry this up
 			//wrapper.find('.chaptertoggle').click(function() {
 			wrapper.find('.chaptertoggle').unbind('click').click(function(){
-				wrapper.find('.podlovewebplayer_chapterbox').toggleClass('active');
-				if (wrapper.find('.podlovewebplayer_chapterbox').hasClass('active')) {
-					wrapper.find('.podlovewebplayer_chapterbox').height(wrapper.find('.podlovewebplayer_chapterbox').data('height') + 'px');
-				} else {
-					wrapper.find('.podlovewebplayer_chapterbox').height('0px');
-				}
+				wrapper.find('.podlovewebplayer_chapterbox').podloveweplayer('toggleHeight');
 				return false;
 			});
 
@@ -576,46 +606,6 @@ console.log(metainfo.length)
 			});
 		}
 		
-		
-		
-		// chapters list
-		list
-			.show()
-			.delegate('.chaptertr', 'click', function (e) {
-				e.preventDefault();
-
-				if ( !( $(this).closest('table').hasClass('linked_all') || $(this).hasClass('loaded')))
-					return;
-
-				var mark = $(this),
-					startTime = mark.data('start'),
-					endTime = mark.data('end');
-
-				// If there is only one player also set deepLink
-				if (players.length === 1) {
-					// setFragmentURL('t=' + generateTimecode([startTime, endTime]));
-					setFragmentURL('t=' + generateTimecode([startTime]));
-				} else {
-					if (canplay) {
-						// Basic Chapter Mark function (without deeplinking)
-						player.setCurrentTime(startTime);
-					} else {
-						//TODO: can these stack?
-						jqPlayer.one('canplay', function () {
-							player.setCurrentTime(startTime);
-						});
-					}
-				}
-
-				// flash fallback needs additional pause
-				if (player.pluginType == 'flash') {
-					player.pause();
-				}
-				player.play();
-				
-				return false;
-			});
-
 		// wait for the player or you'll get DOM EXCEPTIONS
 		jqPlayer.bind('canplay', function () {
 			canplay = true;
@@ -826,8 +816,6 @@ console.log(metainfo.length)
 	var eventHandler = {
 		clickInfowindow: function(event){
 			event.preventDefault();
-
-			//$(this).closest('podlovewebplayer_wrapper').find('pod su')
 
 			var summary = event.data.summary;
 
