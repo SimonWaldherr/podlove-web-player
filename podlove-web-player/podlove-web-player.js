@@ -120,7 +120,7 @@
 				});
 
 				//build rich player with meta data
-				if (  typeof params.chapters !== 'undefined' ||
+				if ( typeof params.chapters !== 'undefined' ||
 						typeof params.title !== 'undefined' ||
 						typeof params.subtitle !== 'undefined' ||
 						typeof params.summary !== 'undefined' ||
@@ -213,7 +213,7 @@
 				wrapper.find('.podlovewebplayer_timecontrol').append('<a href="#" class="forwardbutton infobuttons icon-forward" title="Skip 30 seconds"></a>');
 				if (typeof wrapper.closest('.podlovewebplayer_wrapper').find('.episodetitle a').attr('href') !== 'undefined') {
 					wrapper.append('<div class="podlovewebplayer_sharebuttons podlovewebplayer_controlbox'+sharebuttonsActive+'"></div>');
-					wrapper.find('.togglers').append('<a href="#" class="showsharebuttons infobuttons icon-share" title="show/hide share buttons"></a>')
+					wrapper.find('.togglers').append('<a href="#" class="showsharebuttons infobuttons icon-share" title="show/hide share buttons"></a>');
 					wrapper.find('.podlovewebplayer_sharebuttons').append('<a href="#" class="currentbutton infobuttons icon-link" title="get current position link"></a>');
 					wrapper.find('.podlovewebplayer_sharebuttons').append('<a href="#" target="_blank" class="tweetbutton infobuttons icon-twitter" title="tweet current position"></a>');
 					wrapper.find('.podlovewebplayer_sharebuttons').append('<a href="#" target="_blank" class="fbsharebutton infobuttons icon-facebook" title="share current position on facebook"></a>');
@@ -269,7 +269,11 @@
 		 */
 		play: function ( time){
 			if( $.isFunction(time)){
-				time = time.call( this, this[0].currentTime);
+				time = time.call( this, this[0].currentTime || 0);
+			}
+
+			if(!time && ((typeof this[0].currentTime !== 'number')||(this[0].currentTime <= 0))) {
+				time = 0;
 			}
 
 			/* if deeplink, set url */
@@ -282,6 +286,7 @@
 					this[0].play();
 				} else {
 					this[0].setCurrentTime(time);
+					this[0].play();
 				}
 			} else {
 				this.one('canplay', function(){
@@ -297,6 +302,11 @@
 			}
 			player && player[0].play(); */
 
+			return this;
+		},
+
+		pause: function(){
+			this[0].pause();
 			return this;
 		}
 
@@ -565,21 +575,15 @@
 			});
 
 			wrapper.find('.rewindbutton').click(function(){
-				if((typeof player.currentTime === 'number')&&(player.currentTime > 0)) {
-					player.setCurrentTime(player.currentTime - 30);
-				} else {
-					player.play();
-				}
-				return false;
+				$(player).podlovewebplayer( 'play', function(oldTime){
+					return oldTime - 30;
+				});
 			});
 
 			wrapper.find('.forwardbutton').click(function(){
-				if((typeof player.currentTime === 'number')&&(player.currentTime > 0)) {
-					player.setCurrentTime(player.currentTime+30);
-				} else {
-					player.play();
-				}
-				return false;
+				$(player).podlovewebplayer( 'play', function(oldTime){
+					return oldTime + 30;
+				});
 			});
 
 			wrapper.find('.currentbutton').click(function(){
@@ -638,7 +642,6 @@
 
 				// handle browser history navigation
 				$(window).bind('hashchange onpopstate', checkCurrentURL);
-
 			}
 
 			// always update Chaptermarks though
@@ -647,7 +650,7 @@
 			});
 
 			// update play/pause status
-			jqPlayer.bind('play, playing', function(){
+			jqPlayer.bind('play playing', function(){
 				list.find('.paused').removeClass('paused');
 				if (metainfo.length === 1) {
 					metainfo.find('.bigplay').addClass('playing');
@@ -828,8 +831,6 @@
 			var summary = event.data.summary;
 
 			summary.podlovewebplayer('toggleHeight');
-
-			return false;
 		}
 	};
 	
