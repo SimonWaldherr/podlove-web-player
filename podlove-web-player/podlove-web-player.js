@@ -8,9 +8,60 @@
 		// Timecode as described in http://podlove.org/deep-link/
 		// and http://www.w3.org/TR/media-frags/#fragment-dimensions
 		timecodeRegExp = /(?:(\d+):)?(\d+):(\d+)(\.\d+)?([,-](?:(\d+):)?(\d+):(\d+)(\.\d+)?)?/,
-		wrapperDummy = $(
-			'<div></div>'
-		);
+		wrapperDummy = $('
+			<div class="podlovewebplayer_meta">
+				<a class="bigplay" href="#">Play Episode</a>
+				<div class="coverart"><img src="samples/coverimage.png" alt=""></div>
+				<h3 class="episodetitle">
+					<a href="http://podlove.github.com/podlove-web-player/standalone.html">{TITLE}</a>
+				</h3>
+				<div class="subtitle">{SUBTITLE}</div>
+				<div class="togglers">
+					<a href="#" class="infowindow infobuttons icon-info-sign" title="{MOREINFORMATION}"></a>
+					<a href="#" class="chaptertoggle infobuttons icon-list-ul" title="show/hide chapters"></a>
+					<a href="#" class="showcontrols infobuttons icon-time" title="show/hide controls box"></a>
+					<a href="#" class="showsharebuttons infobuttons icon-share" title="show/hide share buttons"></a>
+				</div>
+			</div>
+			<div style="height: 0px;" class="summary">{SUMMARY}</div>
+			<div style="width: 100%; height: 30px;" id="mep_0" class="mejs-container svg mejs-audio">
+		<div class="mejs-inner">
+		<div class="mejs-mediaelement"><audio src="samples/podlove-test-track.ogg" id="testplayer">
+			<source src="samples/podlove-test-track.mp4" type="audio/mp4">
+			<source src="samples/podlove-test-track.mp3" type="audio/mp3">
+			<source src="samples/podlove-test-track.ogg" type="audio/ogg; codecs=vorbis">
+			<source src="samples/podlove-test-track.opus" type="audio/ogg; codecs=opus">
+		</audio></div>
+		<div class="mejs-layers">
+			<div style="display: none; width: 100%; height: 30px;" class="mejs-poster mejs-layer"></div></div>
+			<div class="mejs-controls">
+				<div class="mejs-time mejs-currenttime-container">
+					<span class="mejs-currenttime">00:00:00</span>
+				</div>
+			<div style="width: 1038px;" class="mejs-time-rail">
+				<span style="width: 1028px;" class="mejs-time-total">
+					<span style="display: none;" class="mejs-time-buffering"></span>
+					<span style="width: 1028px;" class="mejs-time-loaded"></span>
+					<span style="width: 0px;" class="mejs-time-current"></span>
+					<span style="left: -7px;" class="mejs-time-handle"></span>
+					<span style="display: none; left: 146px;" class="mejs-time-float">
+						<span class="mejs-time-float-current">00:00</span>
+						<span class="mejs-time-float-corner"></span>
+					</span>
+				</span>
+			</div>
+			<div class="mejs-time mejs-duration-container"><span class="mejs-duration">00:00:02</span></div><div class="mejs-button mejs-volume-button mejs-mute"><button type="button" aria-controls="mep_0" title="Mute Toggle"></button></div><div class="mejs-horizontal-volume-slider mejs-mute"><div class="mejs-horizontal-volume-total"></div><div style="width: 40px;" class="mejs-horizontal-volume-current"></div><div style="left: 27px;" class="mejs-horizontal-volume-handle"></div></div></div>
+			<div class="mejs-clear"></div></div></div><div class="podlovewebplayer_timecontrol podlovewebplayer_controlbox"><a href="#" class="prevbutton infobuttons icon-step-backward" title="previous chapter"></a><a href="#" class="nextbutton infobuttons icon-step-forward" title="next chapter"></a><a href="#" class="rewindbutton infobuttons icon-backward" title="Rewind 30 seconds"></a><a href="#" class="forwardbutton infobuttons icon-forward" title="Skip 30 seconds"></a></div><div class="podlovewebplayer_sharebuttons podlovewebplayer_controlbox"><a href="#" class="currentbutton infobuttons icon-link" title="get current position link"></a><a href="#" target="_blank" class="tweetbutton infobuttons icon-twitter" title="tweet current position"></a><a href="#" target="_blank" class="fbsharebutton infobuttons icon-facebook" title="share current position on facebook"></a><a href="#" target="_blank" class="gplusbutton infobuttons icon-google-plus" title="share current position on Google+"></a><a href="#" target="_blank" class="mailbutton infobuttons icon-envelope" title="share current position via mail"></a></div><div class="podlovewebplayer_chapterbox showonplay active"><table style="display: table;" class="podlovewebplayer_chapters linked linked_all"><caption>Podcast Chapters</caption><thead><tr><th scope="col">Chapter Number</th><th scope="col">Start time</th><th scope="col">Title</th><th scope="col">Duration</th></tr></thead><tbody><tr class="chaptertr" data-start="0" data-end="1"><td class="starttime"><span>00:00</span></td><td>Chapter One title</td><td class="timecode">
+<span>00:01</span>
+</td>
+</tr><tr class="chaptertr oddchapter" data-start="1" data-end="1.5"><td class="starttime"><span>00:01</span></td><td>Chapter Two with <a href="#">hyperlink</a></td><td class="timecode">
+<span>00:01</span>
+</td>
+</tr><tr class="chaptertr" data-start="1.5" data-end="2.5"><td class="starttime"><span>00:02</span></td><td>Chapter Three</td><td class="timecode">
+<span>00:01</span>
+</td>
+</tr></tbody></table></div><div class="podlovewebplayer_tableend"></div>
+		');
 
 	var methods = {
 		init: function(options) {
@@ -256,6 +307,7 @@
 				$(orig).replaceWith(wrapper);
 				$(player).mediaelementplayer(mejsoptions);
 $(wrapper).data('player', $(player));
+
 				return wrapper;
 			});
 		},
