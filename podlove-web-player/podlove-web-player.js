@@ -244,6 +244,7 @@
 
 				// init MEJS to player
 				mejsoptions.success = function (player) {
+					$(wrapper).data('player', $(player));
 					addBehavior(player, params);
 					if (deepLink !== false && players.length === 1) {
 						$('html, body').delay(150).animate({
@@ -254,10 +255,8 @@
 
 				$(orig).replaceWith(wrapper);
 				$(player).mediaelementplayer(mejsoptions);
-
-				$(wrapper).data('player',$(player));
-
-				return player;
+$(wrapper).data('player', $(player));
+				return wrapper;
 			});
 		},
 
@@ -297,14 +296,6 @@
 					$(this).data( 'canplay', true).podlovewebplayer( 'play', time);
 				});
 			}
-
-
-			// flash fallback needs additional pause
-			/*TODO
-			if (player && player[0].pluginType == 'flash') {
-				player[0].pause();
-			}
-			player && player[0].play(); */
 
 			return this;
 		},
@@ -363,7 +354,7 @@
 
 				var startTime = $(this).data('start'),
 					player = $(this).closest('.podlovewebplayer_wrapper').data('player');
-
+console.log(player)
 				player.podlovewebplayer('play', startTime);
 			});
 		}
