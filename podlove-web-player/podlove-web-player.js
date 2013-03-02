@@ -139,10 +139,13 @@
 				}
 
 				var orig = player;
+				player = orig.clone();
+				var wrapper = wrapperDummy.clone();
+					wrapper.find('audio').replaceWith(player);
 
-				player = $(player).clone().wrap('<div class="podlovewebplayer_wrapper" style="width: ' + params.width + '"></div>')[0];
-				var deepLink,
-					wrapper = $(player).parent();
+				wrapper.css( 'width', params.width);
+
+				var deepLink;
 
 				players.push(player);
 
