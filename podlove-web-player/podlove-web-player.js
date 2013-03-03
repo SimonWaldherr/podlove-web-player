@@ -302,42 +302,45 @@ $(wrapper).data('player', $(player));
 		},
 
 		/**
-		 * Starts a player.
+		 * Starts a player. To be called on a wrapper.
 		 * @param time (optional)
 		 */
 		play: function ( time){
-			if( $.isFunction(time)){
-				time = time.call( this, this[0].currentTime || 0);
-			}
+			return this.each(function(){
+				var player = $(this).data('player') && this;
 
-			if(!time && ((typeof this[0].currentTime !== 'number')||(this[0].currentTime <= 0))) {
-				time = 0;
-			}
-
-			/* if deeplink, set url */
-			if( players.length === 1){
-				setFragmentURL('t=' + generateTimecode([time]));
-			}
-
-			if( this.data('canplay')){
-				if( typeof time === 'undefined'){
-					this[0].play();
-				} else {
-					this[0].setCurrentTime(time);
-					this[0].play();
+				if( $.isFunction(time)){
+					time = time.call( this, player.currentTime || 0);
 				}
-			} else {
-				this.one('canplay', function(){
-					$(this).data( 'canplay', true).podlovewebplayer( 'play', time);
-				});
-			}
 
-			return this;
+				if(!time && ((typeof player.currentTime !== 'number')||(player.currentTime <= 0))) {
+					time = 0;
+				}
+
+				/* if deeplink, set url */
+				if( players.length === 1){
+					setFragmentURL('t=' + generateTimecode([time]));
+				}
+
+				if( this.data('canplay')){
+					if( typeof time === 'undefined'){
+						player.play();
+					} else {
+						player.setCurrentTime(time);
+						player.play();
+					}
+				} else {
+					this.one('canplay', function(){
+						$(this).data( 'canplay', true).podlovewebplayer( 'play', time);
+					});
+				}
+
+			});
 		},
 
 		pause: function(){
 			return this.each(function(){
-				$(this).data('player').pause();
+				$(this).data('player').get(0).pause();
 			});
 		}
 
