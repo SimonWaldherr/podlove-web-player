@@ -338,6 +338,9 @@ $(wrapper).data('player', $(player));
 			});
 		},
 
+		/**
+		 * Pauses a player. `this` is a collection of wrappers
+		 */
 		pause: function(){
 			return this.each(function(){
 				$(this).data('player').get(0).pause();
@@ -609,13 +612,13 @@ console.log(player)
 			});
 
 			wrapper.find('.rewindbutton').click(function(){
-				$(player).podlovewebplayer( 'play', function(oldTime){
+				$(wrapper).podlovewebplayer( 'play', function(oldTime){
 					return oldTime - 30;
 				});
 			});
 
 			wrapper.find('.forwardbutton').click(function(){
-				$(player).podlovewebplayer( 'play', function(oldTime){
+				$(wrapper).podlovewebplayer( 'play', function(oldTime){
 					return oldTime + 30;
 				});
 			});
