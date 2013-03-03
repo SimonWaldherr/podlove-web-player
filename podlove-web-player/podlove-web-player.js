@@ -261,7 +261,7 @@
 				if (typeof params.chapters !== 'undefined') {
 					haschapters = true;
 
-					generateChapterTable(params).appendTo(wrapper);
+					wrapper.find('.podlovewebplayer_chapterbox').replaceWith(generateChapterTable(params));
 				}
 
 				if (richplayer || haschapters) {
@@ -295,6 +295,9 @@ $(wrapper).data('player', $(player));
 			});
 		},
 
+		/**
+		 * Toggles the height of an element depending on its activity state.
+		 */
 		toggleHeight: function () {
 			return this.toggleClass('active').height(function(){
 				return $(this).hasClass('active') ? $(this).data('height') + 'px' : '0px';
@@ -307,7 +310,10 @@ $(wrapper).data('player', $(player));
 		 */
 		play: function ( time){
 			return this.each(function(){
-				var player = $(this).data('player') && this;
+				var player = $(this).data('player'), rawPlayer;
+				if( !player) return;
+
+				rawPlayer = player.get(0);
 
 				if( $.isFunction(time)){
 					time = time.call( this, player.currentTime || 0);
@@ -321,16 +327,17 @@ $(wrapper).data('player', $(player));
 				if( players.length === 1){
 					setFragmentURL('t=' + generateTimecode([time]));
 				}
-
-				if( this.data('canplay')){
+console.log( this, player, time)
+				if( $(this).data('canplay')){
 					if( typeof time === 'undefined'){
-						player.play();
+						rawPlayer.play();
 					} else {
-						player.setCurrentTime(time);
-						player.play();
+						rawPlayer.setCurrentTime(time);
+						rawPlayer.play();
 					}
+					console.log( this, player, time)
 				} else {
-					this.one('canplay', function(){
+					$(this).one('canplay', function(){
 						$(this).data( 'canplay', true).podlovewebplayer( 'play', time);
 					});
 				}
@@ -394,10 +401,9 @@ $(wrapper).data('player', $(player));
 				if ( !( $(event.delegateTarget).find('table').hasClass('linked_all') || $(this).hasClass('loaded')))
 					return;
 
-				var startTime = $(this).data('start'),
-					player = $(this).closest('.podlovewebplayer_wrapper').data('player');
-console.log(player)
-				player.podlovewebplayer('play', startTime);
+				var startTime = $(this).data('start');
+
+				$(this).closest('.podlovewebplayer_wrapper').podlovewebplayer('play', startTime);
 			});
 		}
 		
@@ -657,7 +663,7 @@ console.log(player)
 		// wait for the player or you'll get DOM EXCEPTIONS
 		jqPlayer.bind('canplay', function () {
 			canplay = true;
-			$(this).data('canplay',true);
+			$(wrapper).data( 'canplay', true);
 
 			// add duration of final chapter
 			if (player.duration) {
