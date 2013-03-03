@@ -382,7 +382,7 @@ $(wrapper).data('player', $(player));
 			+ '</tr>');
 
 			//attach events
-			generateChapterTable.div.on( 'click', '.chaptertr', function(event){
+			generateChapterTable.div.on( 'click.podloveweplayer', '.chaptertr', function(event){
 				event.preventDefault();
 
 				if ( !( $(event.delegateTarget).find('table').hasClass('linked_all') || $(this).hasClass('loaded')))
