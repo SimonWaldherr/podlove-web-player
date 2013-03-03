@@ -14,7 +14,7 @@
 				'<a class="bigplay" href="#">Play Episode</a>'+
 				'<div class="coverart"><img src="samples/coverimage.png" alt=""></div>'+
 				'<h3 class="episodetitle">'+
-					'<a href="http://podlove.github.com/podlove-web-player/standalone.html">{TITLE}</a>'+
+					'<a href="{URL}">{TITLE}</a>'+
 				'</h3>'+
 				'<div class="subtitle">{SUBTITLE}</div>'+
 				'<div class="togglers">'+
@@ -39,7 +39,7 @@
 				'<a href="#" target="_blank" class="gplusbutton infobuttons icon-google-plus" title="share current position on Google+"></a>'+
 				'<a href="#" target="_blank" class="mailbutton infobuttons icon-envelope" title="share current position via mail"></a>'+
 			'</div>'+
-			'<div class="podlovewebplayer_chapterbox showonplay active">{CHAPTERS}</div>'+
+			'<div class="podlovewebplayer_chapterbox showonplay">{CHAPTERS}</div>'+
 			'<div class="podlovewebplayer_tableend"></div>'+
 		'</div>');
 
@@ -177,20 +177,16 @@
 								mejsoptions.features.splice(i,1);
 							}
 						});
-						
-						wrapper.prepend('<div class="podlovewebplayer_meta"></div>');
-						
-						wrapper.find('.podlovewebplayer_meta').prepend('<a class="bigplay" href="#">Play Episode</a>');
+
 						if (typeof params.poster !== 'undefined') {
-							wrapper.find('.podlovewebplayer_meta').append(
-								'<div class="coverart"><img src="'+params.poster+'" alt=""></div>');
+							wrapper.find('.coverart > img').attr('src', params.poster);
 						}
 						if (typeof $(player).attr('poster') !== 'undefined') {
-							wrapper.find('.podlovewebplayer_meta').append(
-								'<div class="coverart"><img src="'+$(player).attr('poster')+'" alt=""></div>');
+							wrapper.find('.coverart > img').attr('src', $(player).attr('poster'));
 						}
 					}
 
+					// TODO
 					if (player.tagName == "VIDEO") {
 						wrapper.prepend('<div class="podlovewebplayer_top"></div>');
 						wrapper.append('<div class="podlovewebplayer_meta"></div>');
@@ -198,63 +194,39 @@
 					
 					if (typeof params.title !== 'undefined') {
 						if (typeof params.permalink !== 'undefined') {
-							wrapper.find('.podlovewebplayer_meta').append(
-								'<h3 class="episodetitle"><a href="'+params.permalink+'">'+params.title+'</a></h3>');
+							wrapper.find('.episodetitle > a').attr('href', params.permalink).html( params.title);
 						} else {
-							wrapper.find('.podlovewebplayer_meta').append(
-								'<h3 class="episodetitle">'+params.title+'</h3>');
+							wrapper.find('.episodetitle').html( params.title);
 						}
 					}
 					if (typeof params.subtitle !== 'undefined') {
-						wrapper.find('.podlovewebplayer_meta').append(
-							'<div class="subtitle">'+params.subtitle+'</div>');
+						wrapper.find('.subtitle').html( params.subtitle);
 					}
 
-					//always render toggler buttons wrapper
-					wrapper.find('.podlovewebplayer_meta').append('<div class="togglers"></div>');
 					
 					if (typeof params.summary !== 'undefined') {
-						var summaryActive = "";
-						if (params.summaryVisible == true) {
-							summaryActive = " active";
-						}
-						wrapper.find('.togglers').append(
-							'<a href="#" class="infowindow infobuttons icon-info-sign" title="more information on the episode"></a>');
-						wrapper.find('.podlovewebplayer_meta').after(
-							'<div class="summary'+summaryActive+'">'+params.summary+'</div>');
+						wrapper.find('.summary').html(params.summary).toggleClass('active', params.summaryVisible);
 					}
-					if (typeof params.chapters !== 'undefined') {
-						wrapper.find('.togglers').append(
-							'<a href="#" class="chaptertoggle infobuttons icon-list-ul" title="show/hide chapters"></a>');
+					if (typeof params.chapters === 'undefined') {
+						wrapper.find('.chaptertoggle').hide();
 					}
-					wrapper.find('.togglers').append('<a href="#" class="showcontrols infobuttons icon-time" title="show/hide controls box"></a>');
 				}
 
-				var timecontrolsActive = "";
-				if (params.timecontrolsVisible == true) {
-					timecontrolsActive = " active";
-				}
+				wrapper.find('.podlovewebplayer_timecontrol').toggleClass('active', params.timecontrolsVisible);
+				
 				var sharebuttonsActive = "";
 				if (params.sharebuttonsVisible == true) {
 					sharebuttonsActive = " active";
 				}
-				wrapper.append('<div class="podlovewebplayer_timecontrol podlovewebplayer_controlbox'+timecontrolsActive+'"></div>');
 				
-				if (typeof params.chapters !== 'undefined') {
-					wrapper.find('.podlovewebplayer_timecontrol').append('<a href="#" class="prevbutton infobuttons icon-step-backward" title="previous chapter"></a><a href="#" class="nextbutton infobuttons icon-step-forward" title="next chapter"></a>')
-					wrapper.find('.controlbox').append('<a href="#" class="prevbutton infobuttons icon-step-backward" title="previous chapter"></a><a href="#" class="nextbutton infobuttons icon-step-forward" title="next chapter"></a>');
-				}
+				
 				wrapper.find('.podlovewebplayer_timecontrol').append(
 					'<a href="#" class="rewindbutton infobuttons icon-backward" title="Rewind 30 seconds"></a>');
 				wrapper.find('.podlovewebplayer_timecontrol').append('<a href="#" class="forwardbutton infobuttons icon-forward" title="Skip 30 seconds"></a>');
+				
+
 				if (typeof wrapper.closest('.podlovewebplayer_wrapper').find('.episodetitle a').attr('href') !== 'undefined') {
 					wrapper.append('<div class="podlovewebplayer_sharebuttons podlovewebplayer_controlbox'+sharebuttonsActive+'"></div>');
-					wrapper.find('.togglers').append('<a href="#" class="showsharebuttons infobuttons icon-share" title="show/hide share buttons"></a>');
-					wrapper.find('.podlovewebplayer_sharebuttons').append('<a href="#" class="currentbutton infobuttons icon-link" title="get current position link"></a>');
-					wrapper.find('.podlovewebplayer_sharebuttons').append('<a href="#" target="_blank" class="tweetbutton infobuttons icon-twitter" title="tweet current position"></a>');
-					wrapper.find('.podlovewebplayer_sharebuttons').append('<a href="#" target="_blank" class="fbsharebutton infobuttons icon-facebook" title="share current position on facebook"></a>');
-					wrapper.find('.podlovewebplayer_sharebuttons').append('<a href="#" target="_blank" class="gplusbutton infobuttons icon-google-plus" title="share current position on Google+"></a>');
-					wrapper.find('.podlovewebplayer_sharebuttons').append('<a href="#" target="_blank" class="mailbutton infobuttons icon-envelope" title="share current position via mail"></a>');
 				}
 
 				//build chapter table
@@ -264,8 +236,9 @@
 					wrapper.find('.podlovewebplayer_chapterbox').replaceWith(generateChapterTable(params));
 				}
 
-				if (richplayer || haschapters) {
-					wrapper.append('<div class="podlovewebplayer_tableend"></div>');
+
+				if ( !richplayer && !haschapters) {
+					wrapper.find('.podlovewebplayer_tableend').remove();
 				}
 
 				// parse deeplink
