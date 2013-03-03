@@ -6,7 +6,8 @@
 	<title>Podlove Web Player Standalone Demo</title>
 
 	<link href="libs/mediaelement/build/mediaelementplayer.min.css" rel="stylesheet" media="screen" type="text/css" />
-	<link href="libs/fontawesome/css/font-awesome.min.css" rel="stylesheet" media="screen" type="text/css" />
+	<link rel="stylesheet" href="libs/pwpfont/css/fontello.css" /><!--[if IE 7]>
+	<link rel="stylesheet" href="libs/pwpfont/css/fontello-ie7.css" /><![endif]-->
 	<link href="podlove-web-player.css" rel="stylesheet" media="screen" type="text/css" />
 
 	<script src="libs/html5shiv.js"></script>
@@ -47,5 +48,46 @@
 			});
 		</script>
 	</p>
+
+	<div id="extendedTests">
+		<p>
+			<audio>
+				<source src="samples/podlove-test-track.mp4" type="audio/mp4">
+				<source src="samples/podlove-test-track.mp3" type="audio/mp3">
+				<source src="samples/podlove-test-track.ogg" type="audio/ogg; codecs=vorbis">
+				<source src="samples/podlove-test-track.opus" type="audio/ogg; codecs=opus">
+			</audio>
+		</p>
+		<p>
+			<audio>
+				<source src="samples/podlove-test-track.mp3" type="audio/mp3">
+				<source src="samples/podlove-test-track.ogg" type="audio/ogg; codecs=vorbis">
+				<source src="samples/podlove-test-track.opus" type="audio/ogg; codecs=opus">
+			</audio>
+		</p>
+		<p>
+			<audio>
+				<source src="samples/podlove-test-track.mp3" type="audio/mp3"></source>
+			</audio>
+		</p>
+		<p>
+			<audio>
+				<source src="samples/podlove-test-track.mp4" type="audio/mp4"></source>
+				<source src="samples/podlove-test-track.opus" type="audio/ogg; codecs=opus"></source>
+			</audio>
+		</p>
+		<p>
+			<audio>
+				<source src="samples/podlove-test-track.ogg" type="audio/ogg; codecs=vorbis"></source>
+			</audio>
+		</p>
+	</div>
+	<script>
+
+jQuery('#extendedTests audio').first().podlovewebplayer({
+
+});
+
+	</script>
 </body>
 </html>
