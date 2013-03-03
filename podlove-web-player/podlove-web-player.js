@@ -327,7 +327,7 @@ $(wrapper).data('player', $(player));
 				if( players.length === 1){
 					setFragmentURL('t=' + generateTimecode([time]));
 				}
-console.log( this, player, time)
+
 				if( $(this).data('canplay')){
 					if( typeof time === 'undefined'){
 						rawPlayer.play();
@@ -337,7 +337,7 @@ console.log( this, player, time)
 					}
 					console.log( this, player, time)
 				} else {
-					$(this).one('canplay', function(){
+					$(this).one('canplay.podlovewebplayer', function(){
 						$(this).data( 'canplay', true).podlovewebplayer( 'play', time);
 					});
 				}
@@ -395,7 +395,7 @@ console.log( this, player, time)
 			+ '</tr>');
 
 			//attach events
-			generateChapterTable.div.on( 'click.podloveweplayer', '.chaptertr', function(event){
+			generateChapterTable.div.on( 'click.podlovewebplayer', '.chaptertr', function(event){
 				event.preventDefault();
 
 				if ( !( $(event.delegateTarget).find('table').hasClass('linked_all') || $(this).hasClass('loaded')))
@@ -590,7 +590,7 @@ console.log( this, player, time)
 			//TODO: dry this up
 			//wrapper.find('.chaptertoggle').click(function() {
 			wrapper.find('.chaptertoggle').unbind('click').click(function(){
-				wrapper.find('.podlovewebplayer_chapterbox').podloveweplayer('toggleHeight');
+				wrapper.find('.podlovewebplayer_chapterbox').podlovewebplayer('toggleHeight');
 				return false;
 			});
 
