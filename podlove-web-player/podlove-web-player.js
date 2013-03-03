@@ -138,7 +138,7 @@
 					params.width += 'px';
 				}
 
-				var orig = player;
+				var orig = $(player);
 				player = orig.clone();
 				var wrapper = wrapperDummy.clone();
 					wrapper.find('audio').replaceWith(player);
@@ -167,7 +167,7 @@
 					//set status variable
 					var richplayer = true;
 					
-					wrapper.addClass('podlovewebplayer_' + player.tagName.toLowerCase());
+					wrapper.addClass('podlovewebplayer_' + player.get(0).tagName.toLowerCase());
 
 					if(player.tagName == "AUDIO") {
 						
@@ -336,8 +336,9 @@ $(wrapper).data('player', $(player));
 		},
 
 		pause: function(){
-			this[0].pause();
-			return this;
+			return this.each(function(){
+				$(this).data('player').pause();
+			});
 		}
 
 	};
