@@ -330,7 +330,7 @@ $(wrapper).data('player', $(player));
 	$.fn.podlovewebplayer = function( method){
 		if( method in methods){
 			return methods[method].apply(this, [].slice.call(arguments,1));
-		} else if( typeof method === 'object' ){
+		} else if( typeof method === 'object' || !method){
 			return methods.init.apply( this, [].slice.call(arguments,0));
 		}
 
