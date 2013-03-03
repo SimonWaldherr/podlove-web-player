@@ -11,33 +11,34 @@
 		wrapperDummy = $(
 		'<div class="podlovewebplayer_wrapper">'+
 			'<div class="podlovewebplayer_meta">'+
-				'<a class="bigplay" href="#">Play Episode</a>'+
+				'<a class="bigplay" href="#"></a>'+
 				'<div class="coverart"><img src="samples/coverimage.png" alt=""></div>'+
 				'<h3 class="episodetitle">'+
 					'<a href="{URL}">{TITLE}</a>'+
 				'</h3>'+
 				'<div class="subtitle">{SUBTITLE}</div>'+
 				'<div class="togglers">'+
-					'<a href="#" class="infowindow infobuttons icon-info-sign" title="{MOREINFORMATION}"></a>'+
-					'<a href="#" class="chaptertoggle infobuttons icon-list-ul" title="show/hide chapters"></a>'+
-					'<a href="#" class="showcontrols infobuttons icon-time" title="show/hide controls box"></a>'+
-					'<a href="#" class="showsharebuttons infobuttons icon-share" title="show/hide share buttons"></a>'+
+					'<a href="#" class="infowindow infobuttons icon-info-circle" title="More information about this"></a>'+
+					'<a href="#" class="chaptertoggle infobuttons icon-list-bullet" title="Show/hide chapters"></a>'+
+					'<a href="#" class="showcontrols infobuttons icon-clock" title="Show/hide time navigation controls"></a>'+
+					'<a href="#" class="showsharebuttons infobuttons icon-export" title="Show/hide sharing controls"></a>'+
 				'</div>'+
 			'</div>'+
 			'<div style="height: 0px;" class="summary">{SUMMARY}</div>'+
 			'<audio>{SOURCES}</audio>'+
 			'<div class="podlovewebplayer_timecontrol podlovewebplayer_controlbox">'+
-				'<a href="#" class="prevbutton infobuttons icon-step-backward" title="previous chapter"></a>'+
-				'<a href="#" class="nextbutton infobuttons icon-step-forward" title="next chapter"></a>'+
-				'<a href="#" class="rewindbutton infobuttons icon-backward" title="Rewind 30 seconds"></a>'+
-				'<a href="#" class="forwardbutton infobuttons icon-forward" title="Skip 30 seconds"></a>'+
+				'<a href="#" class="prevbutton infobuttons icon-to-start" title="Jump backward to previous chapter"></a>'+
+				'<a href="#" class="nextbutton infobuttons icon-to-end" title="Jump to next chapter"></a>'+
+				'<a href="#" class="rewindbutton infobuttons icon-fast-bw" title="Rewind 30 seconds"></a>'+
+				'<a href="#" class="forwardbutton infobuttons icon-fast-fw" title="Fast forward 30 seconds"></a>'+
 			'</div>'+
 			'<div class="podlovewebplayer_sharebuttons podlovewebplayer_controlbox">'+
-				'<a href="#" class="currentbutton infobuttons icon-link" title="get current position link"></a>'+
-				'<a href="#" target="_blank" class="tweetbutton infobuttons icon-twitter" title="tweet current position"></a>'+
-				'<a href="#" target="_blank" class="fbsharebutton infobuttons icon-facebook" title="share current position on facebook"></a>'+
-				'<a href="#" target="_blank" class="gplusbutton infobuttons icon-google-plus" title="share current position on Google+"></a>'+
-				'<a href="#" target="_blank" class="mailbutton infobuttons icon-envelope" title="share current position via mail"></a>'+
+				'<a href="#" class="currentbutton infobuttons icon-link" title="Get URL for this"></a>'+
+				'<a href="#" target="_blank" class="tweetbutton infobuttons icon-twitter" title="Share this on Twitter"></a>'+
+				'<a href="#" target="_blank" class="fbsharebutton infobuttons icon-facebook" title="Share this on Facebook"></a>'+
+				'<a href="#" target="_blank" class="gplusbutton infobuttons icon-gplus" title="Share this on Google+"></a>'+
+				'<a href="#" target="_blank" class="adnbutton infobuttons icon-appnet" title="Share this on App.net"></a>'+
+				'<a href="#" target="_blank" class="mailbutton infobuttons icon-mail" title="Share this via e-mail"></a>'+
 			'</div>'+
 			'<div class="podlovewebplayer_chapterbox showonplay">{CHAPTERS}</div>'+
 			'<div class="podlovewebplayer_tableend"></div>'+
@@ -56,7 +57,7 @@
 				startVolume: 0.8,
 				loop: false,
 				enableAutosize: true,
-				features: ['playpause','current','progress','duration','tracks','volume','fullscreen'],
+				features: ['current','progress','duration','tracks','volume','fullscreen'],
 				alwaysShowControls: false,
 				iPadUseNativeControls: false,
 				iPhoneUseNativeControls: false,
@@ -95,6 +96,7 @@
 
 				//audio params
 				if (player.tagName == 'AUDIO') {
+
 					if (typeof params.audioWidth !== 'undefined') {
 						params.width = params.audioWidth;
 					}
@@ -169,7 +171,7 @@
 					
 					wrapper.addClass('podlovewebplayer_' + player.get(0).tagName.toLowerCase());
 
-					if(player.tagName == "AUDIO") {
+					if(player.get(0).tagName == "AUDIO") {
 						
 						//kill play/pause button from miniplayer
 						$.each(mejsoptions.features, function(i){
@@ -219,15 +221,10 @@
 					sharebuttonsActive = " active";
 				}
 				
-				
-				wrapper.find('.podlovewebplayer_timecontrol').append(
-					'<a href="#" class="rewindbutton infobuttons icon-backward" title="Rewind 30 seconds"></a>');
-				wrapper.find('.podlovewebplayer_timecontrol').append('<a href="#" class="forwardbutton infobuttons icon-forward" title="Skip 30 seconds"></a>');
-				
-
-				if (typeof wrapper.closest('.podlovewebplayer_wrapper').find('.episodetitle a').attr('href') !== 'undefined') {
+				//TODO				
+				/*if (typeof wrapper.closest('.podlovewebplayer_wrapper').find('.episodetitle a').attr('href') !== 'undefined') {
 					wrapper.append('<div class="podlovewebplayer_sharebuttons podlovewebplayer_controlbox'+sharebuttonsActive+'"></div>');
-				}
+				}*/
 
 				//build chapter table
 				if (typeof params.chapters !== 'undefined') {
@@ -252,7 +249,7 @@
 				// init MEJS to player
 				mejsoptions.success = function (player) {
 					$(wrapper).data('player', $(player));
-					addBehavior(player, params);
+					addBehavior(player, params, wrapper);
 					if (deepLink !== false && players.length === 1) {
 						$('html, body').delay(150).animate({
 							scrollTop: $('.podlovewebplayer_wrapper:first').offset().top - 25
@@ -361,7 +358,7 @@ $(wrapper).data('player', $(player));
 			generateChapterTable.rowDummy = $(
 			'<tr class="chaptertr" data-start="" data-end="">'
 			+ '<td class="starttime"><span></span></td>'
-			+ '<td></td>'
+			+ '<td class="chaptername"></td>'
 			+ '<td class="timecode">\n'
 			+ '<span></span>\n'
 			+ '</td>\n'
@@ -464,7 +461,7 @@ $(wrapper).data('player', $(player));
 
 			//insert the chapter data
 			row.find('.starttime > span').text( generateTimecode([Math.round(this.start)], forceHours));
-			row.children('td').eq(1).html(this.title);
+			row.find('.chaptername').html(this.title);
 			row.find('.timecode > span').text( this.duration);
 
 			row.appendTo( tbody);
@@ -482,13 +479,16 @@ $(wrapper).data('player', $(player));
 	 * time position & write current time into address
 	 * @param player object
 	 */
-	var addBehavior = function(player, params) {
-
+	var addBehavior = function(player, params, wrapper) {
 		var jqPlayer = $(player),
 			layoutedPlayer = jqPlayer,
-			list = jqPlayer.closest('.podlovewebplayer_wrapper').find('table'),
-			marks = list.find('tr'),
 			canplay = false;
+
+		/**
+		 * The `player` is an interface. It provides the play and pause functionality. The
+		 * `layoutedPlayer` on the other hand is a DOM element. In native mode, these two
+		 * are one and the same object. In Flash though the interface is a plain JS object.
+		 */
 			
 		if (players.length === 1) {
 			// check if deeplink is set
@@ -502,12 +502,13 @@ $(wrapper).data('player', $(player));
 		}
 
 		// cache some jQ objects
-		var wrapper = layoutedPlayer.closest('.podlovewebplayer_wrapper'),
-			metainfo = wrapper.find('.podlovewebplayer_meta'),
+		var metainfo = wrapper.find('.podlovewebplayer_meta'),
 			summary = wrapper.find('.summary'),
 			podlovewebplayer_timecontrol = wrapper.find('.podlovewebplayer_timecontrol'),
 			podlovewebplayer_sharebuttons = wrapper.find('.podlovewebplayer_sharebuttons'),
-			chapterdiv = wrapper.find('.podlovewebplayer_chapterbox');
+			chapterdiv = wrapper.find('.podlovewebplayer_chapterbox'),
+			list = wrapper.find('table'),
+			marks = list.find('tr');
 
 		// fix height of summary for better toggability
 		summary.each(function() {
@@ -534,6 +535,7 @@ $(wrapper).data('player', $(player));
 			metainfo.find('a.showcontrols').on('click', function(){
 				podlovewebplayer_timecontrol.toggleClass('active');
 				podlovewebplayer_sharebuttons.removeClass('active');
+
 				return false;
 			});
 
@@ -547,13 +549,17 @@ $(wrapper).data('player', $(player));
 				if($(this).hasClass('bigplay')) {
 					if((typeof player.currentTime === 'number')&&(player.currentTime > 0)) {
 						if (player.paused) {
-							player.play();
 							$(this).parent().find('.bigplay').addClass('playing');
+							player.play();
 						} else {
-							player.pause();
 							$(this).parent().find('.bigplay').removeClass('playing');
+							player.pause();
 						}
 					} else {
+						if(!$(this).parent().find('.bigplay').hasClass('playing')) {
+							$(this).parent().find('.bigplay').addClass('playing');
+							$(this).parent().parent().find('.mejs-time-buffering').show();
+						}
 						player.play();
 					}
 				}
@@ -628,11 +634,11 @@ $(wrapper).data('player', $(player));
 			});
 
 			wrapper.find('.mailbutton').click(function(){
-				window.location = 'mailto:?subject='+encodeURI($(this).closest('.podlovewebplayer_wrapper').find('.episodetitle a').text())+'&body='+encodeURI($(this).closest('.podlovewebplayer_wrapper').find('.episodetitle a').text())+'%20<'+encodeURI($(this).closest('.podlovewebplayer_wrapper').find('.episodetitle a').attr('href'))+'>';
+				window.location = 'mailto:?subject='+encodeURI($(this).closest('.podlovewebplayer_wrapper').find('.episodetitle a').text())+'&body='+encodeURI($(this).closest('.podlovewebplayer_wrapper').find('.episodetitle a').text())+'%20%3C'+encodeURI($(this).closest('.podlovewebplayer_wrapper').find('.episodetitle a').attr('href'))+'%3E';
 				return false;
 			});
 		}
-		
+
 		// wait for the player or you'll get DOM EXCEPTIONS
 		jqPlayer.bind('canplay', function () {
 			canplay = true;
