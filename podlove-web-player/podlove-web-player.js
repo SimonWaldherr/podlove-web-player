@@ -67,7 +67,11 @@
 				framesPerSecond: 25,
 				enableKeyboard: true,
 				pauseOtherPlayers: true,
-				duration: false
+				duration: false,
+				plugins: ['flash', 'silverlight'],
+				pluginPath: './libs/mediaelement/build/',
+				flashName: 'flashmediaelement.swf',
+				silverlightName: 'silverlightmediaelement.xap'
 			};
 
 			// Additional parameters default values
@@ -292,7 +296,7 @@ $(wrapper).data('player', $(player));
 				if(!time && ((typeof player.currentTime !== 'number')||(player.currentTime <= 0))) {
 					time = 0;
 				}
-
+console.log(this);
 				/* if deeplink, set url */
 				if( players.length === 1){
 					setFragmentURL('t=' + generateTimecode([time]));
@@ -303,9 +307,8 @@ $(wrapper).data('player', $(player));
 						rawPlayer.play();
 					} else {
 						rawPlayer.setCurrentTime(time);
-						rawPlayer.play();
+						//rawPlayer.play();
 					}
-					console.log( this, player, time)
 				} else {
 					$(this).one('canplay.podlovewebplayer', function(){
 						$(this).data( 'canplay', true).podlovewebplayer( 'play', time);
@@ -655,8 +658,8 @@ $(wrapper).data('player', $(player));
 
 			// add Deeplink Behavior if there is only one player on the site
 			if (players.length === 1) {
-				jqPlayer.bind('play timeupdate', {player: player}, checkTime)
-					.bind('pause', {player: player}, addressCurrentTime);
+				//jqPlayer.bind('play timeupdate', {player: player}, checkTime)
+				//	.bind('pause', {player: player}, addressCurrentTime);
 				// disabled 'cause it overrides chapter clicks
 				// bind seeked to addressCurrentTime
 
