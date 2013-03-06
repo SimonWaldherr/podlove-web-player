@@ -41,12 +41,7 @@
 				'<a href="#" target="_blank" class="adnbutton infobuttons icon-appnet" title="Share this on App.net"></a>'+
 				'<a href="#" target="_blank" class="mailbutton infobuttons icon-mail" title="Share this via e-mail"></a>'+
 			'</div>'+
-			'<div class="podlovewebplayer_downloadbuttons podlovewebplayer_controlbox">'+
-				'<select name="downloads" class="podlovewebplayer_fileselect" size="1" onchange="this.value=this.options[this.selectedIndex].value;"></select>'+
-				'<a href="#" class="downloadbutton infobuttons icon-download" title="Download"> <span>download</span></a>'+
-				'<a href="#" class="openfilebutton infobuttons icon-link-ext" title="Open"> <span>open</span></a>'+
-				'<a href="#" class="fileinfobutton infobuttons icon-info-circle" title="Info"> <span>URL</span></a>'+
-			'</div>'+
+			'<div class="podlovewebplayer_downloadbuttons podlovewebplayer_controlbox">{DOWNLOADS}</div>'+
 			'<div class="podlovewebplayer_chapterbox showonplay">{CHAPTERS}</div>'+
 			'<div class="podlovewebplayer_tableend"></div>'+
 		'</div>');
@@ -178,6 +173,17 @@
 					}
 				});
 
+				//build chapter table
+				if (typeof params.chapters !== 'undefined') {
+					haschapters = true;
+				
+					wrapper.find('.podlovewebplayer_chapterbox').replaceWith(generateChapterTable(params));
+				}
+				
+				if ((typeof params.downloads !== 'undefined')||(typeof params.sources !== 'undefined')) {
+					wrapper.find('.podlovewebplayer_downloadbuttons').replaceWith(generateDownloadFileSelector(params));
+				}
+				
 				//build rich player with meta data
 				if ( typeof params.chapters !== 'undefined' ||
 						typeof params.title !== 'undefined' ||
@@ -257,16 +263,7 @@
 					wrapper.append('<div class="podlovewebplayer_sharebuttons podlovewebplayer_controlbox'+sharebuttonsActive+'"></div>');
 				}*/
 
-				//build chapter table
-				if (typeof params.chapters !== 'undefined') {
-					haschapters = true;
-
-					wrapper.find('.podlovewebplayer_chapterbox').replaceWith(generateChapterTable(params));
-				}
 				
-				if ((typeof params.downloads !== 'undefined')||(typeof params.sources !== 'undefined')) {
-					wrapper.find('.podlovewebplayer_fileselect').replaceWith(generateDownloadFileSelector(params));
-				}
 				
 
 
@@ -516,7 +513,7 @@
 	var generateDownloadFileSelector = function generateDownloadFileSelector( params ) {
 	
 		if ((typeof params.downloads !== 'undefined')||(typeof params.sources !== 'undefined')) {
-			var key, size, name, selectform = '';
+			var key, size, name, selectform = '<div class="podlovewebplayer_downloadbuttons podlovewebplayer_controlbox"><select name="downloads" class="fileselect" size="1" onchange="this.value=this.options[this.selectedIndex].value;">';
 			if (typeof params.downloads !== 'undefined') {
 				for (key in params.downloads) {
 					size = (parseInt(params.downloads[key]['size'],10) < 1048704) ? Math.round(parseInt(params.downloads[key]['size'],10)/100)/10+'kB' : Math.round(parseInt(params.downloads[key]['size'],10)/1000/100)/10+'MB';
@@ -529,6 +526,14 @@
 					selectform += '<option value="'+params.sources[key]+'" data-url="'+params.sources[key]+'" data-dlurl="'+params.sources[key]+'">'+name+'</option>';
 				}
 			}
+		
+			selectform += '</select>';
+			if (typeof params.downloads !== 'undefined') {
+				selectform += '<a href="#" class="downloadbutton infobuttons icon-download" title="Download"> <span></span></a> ';
+			}
+			selectform += '<a href="#" class="openfilebutton infobuttons icon-link-ext" title="Open"> <span></span></a> ';
+			selectform += '<a href="#" class="fileinfobutton infobuttons icon-info-circle" title="Info"> <span></span></a> ';
+			selectform += '</div>';
 		}
 	
 		return selectform;
