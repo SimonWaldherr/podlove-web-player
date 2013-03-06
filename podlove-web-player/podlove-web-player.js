@@ -174,8 +174,9 @@
 					}
 				}
 				if (typeof params.subtitle !== 'undefined') {
-					wrapper.find('.podlovewebplayer_meta').append(
-						'<div class="subtitle">'+params.subtitle+'</div>');
+					wrapper.find('.podlovewebplayer_meta').append('<div class="subtitle">'+params.subtitle+'</div>');
+				} else {
+					wrapper.find('.podlovewebplayer_meta').append('<div class="subtitle"></div>');
 				}
 
 				//always render toggler buttons wrapper
