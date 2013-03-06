@@ -180,6 +180,7 @@
 	min-height: 100px;
 	height: auto;
 	margin-bottom: 1px;
+	padding-bottom: 5px;
 	-webkit-border-top-left-radius: 10px;
 	-webkit-border-top-right-radius: 10px;
 	-moz-border-radius-topleft: 10px;
@@ -200,6 +201,7 @@
 	min-height: 11px;
 	height: 11px;
 	margin-bottom: 0px !important;
+	padding-bottom: 0px;
 }
 
 .mejs-container {
@@ -322,10 +324,12 @@
 }
 
 .podlovewebplayer_meta .subtitle {
-	margin-right: 75px;
+	margin-right: 15px;
 	font-size: 12px;
 	color: #eee !important;
 	background: transparent !important;
+	margin-left: 185px;
+	padding-bottom: 35px;
 }
 
 .podlovewebplayer_meta .subtitle strong{
@@ -433,7 +437,19 @@ filter: dropshadow(color=#000000, offx=0, offy=0);
 }
 
 .podlovewebplayer_meta .togglers {
+	float: right;
+	position: relative;
 	text-align: right;
+	right: 9px;
+	top: -25px;
+	margin-bottom: -25px;
+	height: 30px;
+}
+
+.podlovewebplayer_meta .togglers .infobuttons {
+	display: inline-block;
+	height: 30px;
+	width: 30px;
 }
 
 .podlovewebplayer_wrapper .podlovewebplayer_controlbox {
