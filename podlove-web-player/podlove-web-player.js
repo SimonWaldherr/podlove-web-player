@@ -18,28 +18,28 @@
 				'</h3>'+
 				'<div class="subtitle">{SUBTITLE}</div>'+
 				'<div class="togglers">'+
-					'<a href="#" class="infowindow infobuttons icon-info-circle" title="More information about this"></a>'+
-					'<a href="#" class="chaptertoggle infobuttons icon-list-bullet" title="Show/hide chapters"></a>'+
-					'<a href="#" class="showcontrols infobuttons icon-clock" title="Show/hide time navigation controls"></a>'+
-					'<a href="#" class="showsharebuttons infobuttons icon-export" title="Show/hide sharing controls"></a>'+
-					'<a href="#" class="showdownloadbuttons infobuttons icon-download" title="Show/hide download bar"></a>'+
+					'<a href="#" class="infowindow infobuttons pwp-icon-info-circle" title="More information about this"></a>'+
+					'<a href="#" class="chaptertoggle infobuttons pwp-icon-list-bullet" title="Show/hide chapters"></a>'+
+					'<a href="#" class="showcontrols infobuttons pwp-icon-clock" title="Show/hide time navigation controls"></a>'+
+					'<a href="#" class="showsharebuttons infobuttons pwp-icon-export" title="Show/hide sharing controls"></a>'+
+					'<a href="#" class="showdownloadbuttons infobuttons pwp-icon-download" title="Show/hide download bar"></a>'+
 				'</div>'+
 			'</div>'+
 			'<div style="height: 0px;" class="summary">{SUMMARY}</div>'+
 			'<audio>{SOURCES}</audio>'+
 			'<div class="podlovewebplayer_timecontrol podlovewebplayer_controlbox">'+
-				'<a href="#" class="prevbutton infobuttons icon-to-start" title="Jump backward to previous chapter"></a>'+
-				'<a href="#" class="nextbutton infobuttons icon-to-end" title="Jump to next chapter"></a>'+
-				'<a href="#" class="rewindbutton infobuttons icon-fast-bw" title="Rewind 30 seconds"></a>'+
-				'<a href="#" class="forwardbutton infobuttons icon-fast-fw" title="Fast forward 30 seconds"></a>'+
+				'<a href="#" class="prevbutton infobuttons pwp-icon-to-start" title="Jump backward to previous chapter"></a>'+
+				'<a href="#" class="nextbutton infobuttons pwp-icon-to-end" title="Jump to next chapter"></a>'+
+				'<a href="#" class="rewindbutton infobuttons pwp-icon-fast-bw" title="Rewind 30 seconds"></a>'+
+				'<a href="#" class="forwardbutton infobuttons pwp-icon-fast-fw" title="Fast forward 30 seconds"></a>'+
 			'</div>'+
 			'<div class="podlovewebplayer_sharebuttons podlovewebplayer_controlbox">'+
-				'<a href="#" class="currentbutton infobuttons icon-link" title="Get URL for this"></a>'+
-				'<a href="#" target="_blank" class="tweetbutton infobuttons icon-twitter" title="Share this on Twitter"></a>'+
-				'<a href="#" target="_blank" class="fbsharebutton infobuttons icon-facebook" title="Share this on Facebook"></a>'+
-				'<a href="#" target="_blank" class="gplusbutton infobuttons icon-gplus" title="Share this on Google+"></a>'+
-				'<a href="#" target="_blank" class="adnbutton infobuttons icon-appnet" title="Share this on App.net"></a>'+
-				'<a href="#" target="_blank" class="mailbutton infobuttons icon-mail" title="Share this via e-mail"></a>'+
+				'<a href="#" class="currentbutton infobuttons pwp-icon-link" title="Get URL for this"></a>'+
+				'<a href="#" target="_blank" class="tweetbutton infobuttons pwp-icon-twitter" title="Share this on Twitter"></a>'+
+				'<a href="#" target="_blank" class="fbsharebutton infobuttons pwp-icon-facebook" title="Share this on Facebook"></a>'+
+				'<a href="#" target="_blank" class="gplusbutton infobuttons pwp-icon-gplus" title="Share this on Google+"></a>'+
+				'<a href="#" target="_blank" class="adnbutton infobuttons pwp-icon-appnet" title="Share this on App.net"></a>'+
+				'<a href="#" target="_blank" class="mailbutton infobuttons pwp-icon-mail" title="Share this via e-mail"></a>'+
 			'</div>'+
 			'<div class="podlovewebplayer_downloadbuttons podlovewebplayer_controlbox">{DOWNLOADS}</div>'+
 			'<div class="podlovewebplayer_chapterbox showonplay">{CHAPTERS}</div>'+
@@ -176,14 +176,14 @@
 				//build chapter table
 				if (typeof params.chapters !== 'undefined') {
 					haschapters = true;
-				
+
 					wrapper.find('.podlovewebplayer_chapterbox').replaceWith(generateChapterTable(params));
 				}
-				
+
 				if ((typeof params.downloads !== 'undefined')||(typeof params.sources !== 'undefined')) {
 					wrapper.find('.podlovewebplayer_downloadbuttons').replaceWith(generateDownloadFileSelector(params));
 				}
-				
+
 				//build rich player with meta data
 				if ( typeof params.chapters !== 'undefined' ||
 						typeof params.title !== 'undefined' ||
@@ -263,8 +263,8 @@
 					wrapper.append('<div class="podlovewebplayer_sharebuttons podlovewebplayer_controlbox'+sharebuttonsActive+'"></div>');
 				}*/
 
-				
-				
+
+
 
 
 				if ( !richplayer && !haschapters) {
@@ -511,7 +511,7 @@
 	 * this function creates the content of the <select>-element for file downloads.
 	 */
 	var generateDownloadFileSelector = function generateDownloadFileSelector( params ) {
-	
+
 		if ((typeof params.downloads !== 'undefined')||(typeof params.sources !== 'undefined')) {
 			var key, size, name, selectform = '<div class="podlovewebplayer_downloadbuttons podlovewebplayer_controlbox"><select name="downloads" class="fileselect" size="1" onchange="this.value=this.options[this.selectedIndex].value;">';
 			if (typeof params.downloads !== 'undefined') {
@@ -526,16 +526,16 @@
 					selectform += '<option value="'+params.sources[key]+'" data-url="'+params.sources[key]+'" data-dlurl="'+params.sources[key]+'">'+name+'</option>';
 				}
 			}
-		
+
 			selectform += '</select>';
 			if (typeof params.downloads !== 'undefined') {
-				selectform += '<a href="#" class="downloadbutton infobuttons icon-download" title="Download"> <span></span></a> ';
+				selectform += '<a href="#" class="downloadbutton infobuttons pwp-icon-download" title="Download"> <span></span></a> ';
 			}
-			selectform += '<a href="#" class="openfilebutton infobuttons icon-link-ext" title="Open"> <span></span></a> ';
-			selectform += '<a href="#" class="fileinfobutton infobuttons icon-info-circle" title="Info"> <span></span></a> ';
+			selectform += '<a href="#" class="openfilebutton infobuttons pwp-icon-link-ext" title="Open"> <span></span></a> ';
+			selectform += '<a href="#" class="fileinfobutton infobuttons pwp-icon-info-circle" title="Info"> <span></span></a> ';
 			selectform += '</div>';
 		}
-	
+
 		return selectform;
 	};
 
@@ -581,6 +581,8 @@
 			$(this).data('height', $(this).height());
 			if (!$(this).hasClass('active')) {
 				$(this).height('0px');
+			} else {
+				$(this).height($(this).height()+'px');
 			}
 		});
 
@@ -588,6 +590,8 @@
 			$(this).data('height', $(this).find('.podlovewebplayer_chapters').height());
 			if (!$(this).hasClass('active')) {
 				$(this).height('0px');
+			} else {
+				$(this).height($(this).find('.podlovewebplayer_chapters').height()+'px');
 			}
 		});
 
@@ -609,7 +613,7 @@
 				}
 				return false;
 			});
-			
+
 			metainfo.find('a.showsharebuttons').on('click', function(){
 				podlovewebplayer_sharebuttons.toggleClass('active');
 				if(podlovewebplayer_timecontrol.hasClass('active')) {
@@ -619,7 +623,7 @@
 				}
 				return false;
 			});
-			
+
 			metainfo.find('a.showdownloadbuttons').on('click', function(){
 				podlovewebplayer_downloadbuttons.toggleClass('active');
 				if(podlovewebplayer_timecontrol.hasClass('active')) {
@@ -733,14 +737,14 @@
 				});
 				return false;
 			});
-			
+
 			wrapper.find('.openfilebutton').click(function(){
 				$(this).parent().find(".podlovewebplayer_fileselect option:selected").each(function() {
 					window.open($(this).data('url'), 'Podlove Popup', 'width=550,height=420,resizable=yes');
 				});
 				return false;
 			});
-			
+
 			wrapper.find('.fileinfobutton').click(function(){
 				$(this).parent().find(".podlovewebplayer_fileselect option:selected").each(function() {
 					window.prompt('file URL:', $(this).val());
