@@ -56,7 +56,10 @@
 			hidedownloadbutton: false,
 			hidesharebutton: false,
 			sharewholeepisode: false,
-			sources: []
+			summaryVisible: false,
+			livetextVisible: false,
+			sources: [],
+			tracks: []
 		}, options);
 
 		// turn each player in the current set into a Podlove Web Player
@@ -130,12 +133,21 @@
 				params[$(this).data('pwp')] = $(this).html();
 				$(this).remove();
 			});
-			//add params from audio and video elements
+
+			//add params from audio, video and track elements
 			$(player).find('source').each(function(){
 				if(typeof params['sources'] !== 'undefined') {
 					params.sources.push($(this).attr('src'));
 				} else {
 					params[sources][0] = $(this).attr('src');
+				}
+			});
+
+			$(player).find('track').each(function(){
+				if(typeof params['tracks'] !== 'undefined') {
+					params.tracks.push($(this).attr('src'));
+				} else {
+					params[tracks][0] = $(this).attr('src');
 				}
 			});
 
@@ -242,7 +254,20 @@
 			if (params.downloadbuttonsVisible === true) {
 				downloadbuttonsActive = " active";
 			}
-
+			var livetextActive = "";
+			if (params.livetextVisible == true) {
+				livetextActive = " active";
+			}
+			
+			if (typeof params.tracks !== 'undefined') {
+				wrapper.find('.togglers').append('<a href="#" class="subtitletoggle infobuttons pwp-icon-quote-right" title="Show/hide subtitle bar"></a>');
+				wrapper.append('<div class="podlovewebplayer_subtitlebox podlovewebplayer_controlbox'+livetextActive+'"></div>');
+				wrapper.on('subtitle', function (event, subtitleparam0, subtitleparam1, subtitleparam2) {
+					console.log(subtitleparam2);
+					wrapper.find('.podlovewebplayer_subtitlebox').html(subtitleparam2);
+				});
+			}
+			
 			wrapper.append('<div class="podlovewebplayer_timecontrol podlovewebplayer_controlbox'+timecontrolsActive+'"></div>');
 			
 			if (typeof params.chapters !== 'undefined') {
@@ -570,6 +595,16 @@
 					wrapper.find('.podlovewebplayer_chapterbox').height(wrapper.find('.podlovewebplayer_chapterbox').data('height') + 'px');
 				} else {
 					wrapper.find('.podlovewebplayer_chapterbox').height('0px');
+				}
+				return false;
+			});
+
+			wrapper.find('.subtitletoggle').unbind('click').click(function(){
+				wrapper.find('.podlovewebplayer_subtitlebox').toggleClass('active');
+				if (wrapper.find('.podlovewebplayer_subtitlebox').hasClass('active')) {
+					wrapper.find('.podlovewebplayer_subtitlebox').height('25px');
+				} else {
+					wrapper.find('.podlovewebplayer_subtitlebox').height('0px');
 				}
 				return false;
 			});

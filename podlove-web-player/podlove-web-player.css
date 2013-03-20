@@ -258,6 +258,7 @@
 .podlovewebplayer_wrapper .togglers a.pwp-icon-list-bullet:before { content: "\f0ca"; }
 .podlovewebplayer_wrapper .togglers a.pwp-icon-clock:before { content: "\1f554"; }
 .podlovewebplayer_wrapper .togglers a.pwp-icon-export:before { content: "\e715"; }
+.podlovewebplayer_wrapper .togglers a.pwp-icon-quote-right:before { content: "\f10e"; }
 
 .podlovewebplayer_wrapper .podlovewebplayer_timecontrol.podlovewebplayer_controlbox a.pwp-icon-to-start:before { content: "\23ee"; }
 .podlovewebplayer_wrapper .podlovewebplayer_timecontrol.podlovewebplayer_controlbox a.pwp-icon-to-end:before { content: "\23ed"; }
@@ -270,6 +271,10 @@
 .podlovewebplayer_wrapper .podlovewebplayer_sharebuttons.podlovewebplayer_controlbox a.pwp-icon-gplus:before { content: "\f30f"; }
 .podlovewebplayer_wrapper .podlovewebplayer_sharebuttons.podlovewebplayer_controlbox a.pwp-icon-appnet:before { content: "\e1"; }
 .podlovewebplayer_wrapper .podlovewebplayer_sharebuttons.podlovewebplayer_controlbox a.pwp-icon-mail:before { content: "\2709"; }
+
+.podlovewebplayer_wrapper .podlovewebplayer_controlbox.podlovewebplayer_subtitlebox.active {
+	font-size: 14px !important;
+}
 
 .podlovewebplayer_meta .coverart {
 	display: inline;
