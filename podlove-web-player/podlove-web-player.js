@@ -56,7 +56,6 @@
 			hidedownloadbutton: false,
 			hidesharebutton: false,
 			sharewholeepisode: false,
-			summaryVisible: false,
 			livetextVisible: false,
 			sources: [],
 			tracks: []
