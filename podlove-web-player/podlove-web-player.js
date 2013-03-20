@@ -50,7 +50,10 @@
 			chaptersVisible: false,
 			timecontrolsVisible: false,
 			sharebuttonsVisible: false,
-			summaryVisible: false
+			summaryVisible: false,
+			livetextVisible: false,
+			sources: [],
+			tracks: []
 		}, options);
 
 		// turn each player in the current set into a Podlove Web Player
@@ -119,11 +122,27 @@
 
 			players.push(player);
 
-			//add params from html fallback area
+			//add params from html fallback area and remove them from the DOM-tree
 			$(player).find('[data-pwp]').each(function(){
 				params[$(this).data('pwp')] = $(this).html();
 				$(this).remove();
 			});
+			//add params from audio, video and track elements
+			$(player).find('source').each(function(){
+				if(typeof params['sources'] !== 'undefined') {
+					params.sources.push($(this).attr('src'));
+				} else {
+					params[sources][0] = $(this).attr('src');
+				}
+			});
+			$(player).find('track').each(function(){
+				if(typeof params['tracks'] !== 'undefined') {
+					params.tracks.push($(this).attr('src'));
+				} else {
+					params[tracks][0] = $(this).attr('src');
+				}
+			});
+
 
 			//build rich player with meta data
 			if (  typeof params.chapters !== 'undefined' ||
@@ -222,6 +241,20 @@
 			if (params.sharebuttonsVisible == true) {
 				sharebuttonsActive = " active";
 			}
+			var livetextActive = "";
+			if (params.livetextVisible == true) {
+				livetextActive = " active";
+			}
+			
+			if (typeof params.tracks !== 'undefined') {
+				wrapper.find('.togglers').append('<a href="#" class="subtitletoggle infobuttons pwp-icon-quote-right" title="Show/hide subtitle bar"></a>');
+				wrapper.append('<div class="podlovewebplayer_subtitlebox podlovewebplayer_controlbox'+livetextActive+'"></div>');
+				wrapper.on('subtitle', function (event, subtitleparam0, subtitleparam1, subtitleparam2) {
+					console.log(subtitleparam2);
+					wrapper.find('.podlovewebplayer_subtitlebox').html(subtitleparam2);
+				});
+			}
+			
 			wrapper.append('<div class="podlovewebplayer_timecontrol podlovewebplayer_controlbox'+timecontrolsActive+'"></div>');
 			
 			if (typeof params.chapters !== 'undefined') {
@@ -509,6 +542,16 @@
 					wrapper.find('.podlovewebplayer_chapterbox').height(wrapper.find('.podlovewebplayer_chapterbox').data('height') + 'px');
 				} else {
 					wrapper.find('.podlovewebplayer_chapterbox').height('0px');
+				}
+				return false;
+			});
+
+			wrapper.find('.subtitletoggle').unbind('click').click(function(){
+				wrapper.find('.podlovewebplayer_subtitlebox').toggleClass('active');
+				if (wrapper.find('.podlovewebplayer_subtitlebox').hasClass('active')) {
+					wrapper.find('.podlovewebplayer_subtitlebox').height('25px');
+				} else {
+					wrapper.find('.podlovewebplayer_subtitlebox').height('0px');
 				}
 				return false;
 			});
